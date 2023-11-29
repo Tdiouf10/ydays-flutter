@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class AuthController extends Controller
+class AuthController extends ApiController
 {
     public function register(Request $request)
     {
@@ -20,9 +21,7 @@ class AuthController extends Controller
 
             $user = User::create($validatedData);
 
-            $accessToken = $user->createToken('authToken')->accessToken;
-
-            return response()->json(['user' => $user, 'access_token' => $accessToken], 201);
+            return response()->json(['message' => 'Utilisateur creer avec success'], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -31,18 +30,30 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
-            $loginData = $request->validate([
+            $request->validate([
                 'email' => 'email|required',
                 'password' => 'required',
+                'remember_me' => 'boolean'
             ]);
 
-            if (!auth()->attempt($loginData)) {
-                return response()->json(['message' => 'Invalid credentials'], 401);
+            $credentials = request(['email', 'password']);
+
+            if (!Auth::attempt($credentials)) {
+                return $this->unauthorizedException('Invalid credentials');
             }
 
-            $accessToken = auth()->user()->createToken('authToken')->accessToken;
+            $user = $request->user();
+            // auth the user
+            Auth::login($user, $request->remember_me);
+            // create token; expire_at = 1 week
+            $tokenResult = $user->createToken('authToken', ['*'])->plainTextToken;
 
-            return response()->json(['user' => auth()->user(), 'access_token' => $accessToken], 200);
+            return response()->json([
+                'user' => $user,
+                'access_token' => $tokenResult,
+                'token_type' => 'Bearer',
+            ]);
+
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -56,5 +67,9 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    public function refresh()
+    {
     }
 }
