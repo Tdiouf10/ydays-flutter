@@ -15,6 +15,10 @@ class DatabaseSeeder extends Seeder
     {
         $categories = [
             [
+                'name' => 'Apéritifs',
+                'description' => 'Apéritifs traditionnels',
+            ],
+            [
                 'name' => 'Entrées',
                 'description' => 'Entrées traditionnels',
             ],
@@ -29,6 +33,10 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Boissons',
                 'description' => 'Boissons traditionnels',
+            ],
+            [
+                'name' => 'Petit-déjeuner',
+                'description' => 'Petit-déjeuner traditionnels',
             ],
         ];
 
