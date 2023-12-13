@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:recette/main.dart';
 import 'package:recette/providers/auth.dart';
 import 'package:recette/screens/register.dart';
 import 'package:recette/widgets/snack_bar.dart';
 
 import 'package:provider/provider.dart';
+import 'package:recette/widgets/top_screen_image.dart';
+
+import '../widgets/custom_button.dart';
+import '../widgets/custom_text_field.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -23,18 +26,15 @@ class _LoginState extends State<Login> {
   Future submit() async {
     if (_formKey.currentState!.validate()) {
       await Provider.of<Auth>(context, listen: false).login(
-          credential: {
-            'email': _email.text,
-            'password': _password.text
-          });
+          credential: {'email': _email.text, 'password': _password.text});
 
-      ScaffoldMessenger.of(context).showSnackBar(
-          snackBar(context, 'Connexion réussie', false));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(snackBar(context, 'Connexion réussie', false));
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: ((context) => HomePage())));
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(snackBar(context, 'Veuiilez remplir tous les champs', true));
+      ScaffoldMessenger.of(context).showSnackBar(
+          snackBar(context, 'Veuiilez remplir tous les champs', true));
     }
   }
 
@@ -46,71 +46,77 @@ class _LoginState extends State<Login> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Form(
-          key: _formKey,
-          child: ListView(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 20),
+          child: Column(
             children: [
-              const SizedBox(height: 50),
-              Image.asset('assets/images/logo.png', height: 100),
-              const SizedBox(height: 50),
-              TextFormField(
-                controller: _email,
-                decoration: const InputDecoration(
-                  hintText: 'Email',
-                  prefixIcon: Icon(FeatherIcons.mail),
+              const TopScreenImage(screenImageName: 'home.jpg'),
+              const Text(
+                'Connexion',
+                style: TextStyle(
+                  color: Colors.indigo,
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
                 ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Veuillez entrer votre email';
-                  }
-                  return null;
-                },
               ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _password,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  hintText: 'Mot de passe',
-                  prefixIcon: Icon(FeatherIcons.lock),
+              const SizedBox(
+                height: 20,
+              ),
+              Form(
+                key: _formKey,
+                child: Scrollbar(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        CustomTextField(
+                          email: _email,
+                          label: 'Email',
+                          hint: 'theo@gmail.com',
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        CustomTextField(
+                          email: _password,
+                          hint: 'Entrer votre mot de passe',
+                          label: 'Mot de passe',
+                        ),
+                        CustomButton(onTap: submit, title: 'Login')
+                      ],
+                    ),
+                  ),
                 ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Veuillez entrer votre mot de passe';
-                  }
-                  return null;
-                },
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  submit();
-                },
-                child: const Text('Se connecter'),
+              const SizedBox(
+                height: 20,
               ),
-              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('Vous n\'avez pas de compte ?'),
+                  const SizedBox(
+                    child: Text("Vous n'avez pas de compte ?"),
+                  ),
                   TextButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: ((context) => const Register())));
-                    },
-                    child: const Text('S\'inscrire'),
-                  )
+                    onPressed: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: ((context) => const Register())),
+                    ),
+                    child: const Text(
+                      'Inscrivez-vous',
+                      style: TextStyle(color: Colors.indigo),
+                    ),
+                  ),
                 ],
-              )
+              ),
             ],
           ),
         ),
       ),
     );
   }
-
 }

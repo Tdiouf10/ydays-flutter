@@ -7,15 +7,11 @@ class TopScreenImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.contain,
-            image: AssetImage('assets/images/$screenImageName'),
-          ),
-        ),
-      ),
+    return Image.asset(
+      'assets/images/$screenImageName',
+      width: 200, // Set the desired width
+      height: 200, // Set the desired height
+      fit: BoxFit.contain, // Choose an appropriate BoxFit
     );
   }
 }
