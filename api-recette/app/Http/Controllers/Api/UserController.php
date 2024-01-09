@@ -7,7 +7,7 @@ use App\Http\Resources\User\UserCollection;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -27,6 +27,17 @@ class UserController extends Controller
             'name' => 'required|max:55',
             'email' => 'email|required|unique:users',
         ]);
+
+        $fields = collect($request->all());
+        // Set data to the model
+        $haircutReservation = $this->fillModel(new HaircutReservation(), $fields);
+        // Save the model
+        $haircutReservation->save();
+
+        $allUserReservations = Haircut::getHaircutsWithReservationsFromUser($request->user_id);
+
+        // Return the response
+        return response()->json($allUserReservations);
     }
 
     /**
