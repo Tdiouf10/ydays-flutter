@@ -2,13 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use App\Http\Resources\User\UserCollection;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends ApiController
 {
+
+
+    public function __construct()
+    {
+        $this->model = new User();
+        parent::__construct();
+    }
     /**
      * Display a listing of the resource.
      * @return UserCollection
@@ -30,37 +37,49 @@ class UserController extends ApiController
 
         $fields = collect($request->all());
         // Set data to the model
-        $haircutReservation = $this->fillModel(new HaircutReservation(), $fields);
+        $user = $this->fillModel($this->model, $fields);
         // Save the model
-        $haircutReservation->save();
+        $success = $user->save();
 
-        $allUserReservations = Haircut::getHaircutsWithReservationsFromUser($request->user_id);
+        if (!$success) {
+            return $this->internalServerError('User creation failed');
+        }
+        return $this->successResponse('User created successfully');
 
-        // Return the response
-        return response()->json($allUserReservations);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(User $user): UserCollection|JsonResponse
     {
-        //
+        return new UserCollection($user);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $fields = collect($request->all());
+        // Set data to the model
+        $userModel = $this->fillModel($user, $fields);
+        // Save the model
+        $success = $userModel->save();
+
+        if (!$success) {
+            return $this->internalServerError('User creation failed');
+        }
+        return $this->successResponse('User updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        //
+        // Delete the model from the database
+        $user->delete();
+        return $this->successResponse('User deleted successfully');
     }
 }

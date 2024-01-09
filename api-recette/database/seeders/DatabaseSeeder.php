@@ -13,6 +13,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+
+
+
         $categories = [
             [
                 'name' => 'Apéritifs',

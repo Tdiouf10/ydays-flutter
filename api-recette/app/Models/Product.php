@@ -22,4 +22,17 @@ class Product extends Model
         'description',
         'category_id',
     ];
+
+
+    protected $casts = [
+        'dificulty' => 'integer',
+        'number_of_people' => 'integer',
+        'cooking_time' => 'integer',
+        'preparation_time' => 'integer',
+    ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }
