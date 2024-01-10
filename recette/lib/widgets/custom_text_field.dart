@@ -1,43 +1,61 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
+import 'package:recette/utils/AppColor.dart';
 
 class CustomTextField extends StatelessWidget {
-  CustomTextField(
-      {Key? key,
-        required this.label,
-      required this.hint,
-      required this.obscureText,
-      required this.onChanged})
-      : super(key: key);
+  final String title;
+  final String hint;
+  final TextEditingController? controller;
+  final bool obsecureText;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
 
-  String label;
-  String hint;
-  bool obscureText;
-  Function(String) onChanged;
+  const CustomTextField({
+    super.key,
+    required this.title,
+    required this.hint,
+    this.controller,
+    this.obsecureText = false, // Correction de la faute de frappe
+    this.padding,
+    this.margin,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      obscureText: obscureText,
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        hintStyle: const TextStyle(
-          color: Colors.grey,
-        ),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-              bottomRight: Radius.circular(12)),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.indigo),
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(12),
-              bottomRight: Radius.circular(12)),
-        ),
+    return Container(
+      padding: padding,
+      margin: margin,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: Text(
+              title,
+              style: const TextStyle(color: Colors.grey, fontSize: 14),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 8),
+            width: MediaQuery.of(context).size.width,
+            height: 50,
+            decoration: BoxDecoration(
+                color: AppColor.primaryExtraSoft,
+                borderRadius: BorderRadius.circular(10)),
+            child: TextField(
+              controller: controller,
+              style: const TextStyle(fontSize: 14),
+              cursorColor: AppColor.primary,
+              obscureText: obsecureText,
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: TextStyle(fontSize: 14, color: Colors.grey[400]),
+                contentPadding: const EdgeInsets.only(left: 16),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

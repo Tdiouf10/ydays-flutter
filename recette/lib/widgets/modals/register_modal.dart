@@ -1,0 +1,89 @@
+import 'package:flutter/material.dart';
+import 'package:recette/utils/AppColor.dart';
+import 'package:recette/widgets/custom_text_field.dart';
+import 'package:recette/screens/page_switcher.dart';
+
+class RegisterModal extends StatelessWidget {
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * 85 / 100,
+          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 32, top: 16),
+          decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+          child: ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            physics: const BouncingScrollPhysics(),
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 35 / 100,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  height: 6,
+                  decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(20)),
+                ),
+              ),
+              // header
+              Container(
+                margin: const EdgeInsets.only(bottom: 24),
+                child: const Text(
+                  'S\'inscrire',
+                  style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.w700, fontFamily: 'inter'),
+                ),
+              ),
+              // Form
+              const CustomTextField(title: 'Pseudo', hint: 'Votre pseudo'),
+              const CustomTextField(title: 'Email', hint: 'email@gmail.com'),
+              const CustomTextField(title: 'Mot de passe', hint: '**********', obsecureText: true, margin: EdgeInsets.only(top: 16)),
+              const CustomTextField(title: 'Confirmer mot de passe', hint: '**********', obsecureText: true, margin: EdgeInsets.only(top: 16)),
+              // Log in Button
+              Container(
+                margin: const EdgeInsets.only(top: 32, bottom: 6),
+                width: MediaQuery.of(context).size.width,
+                height: 60,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => PageSwitcher()));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    primary: AppColor.primarySoft,
+                  ),
+                  child: Text('S\'inscrire', style: TextStyle(color: AppColor.secondary, fontSize: 16, fontWeight: FontWeight.w600, fontFamily: 'inter')),
+                ),
+              ),
+              // TextButton(
+              //   onPressed: () {},
+              //   style: TextButton.styleFrom(
+              //     primary: Colors.white,
+              //   ),
+              //   child: RichText(
+              //     text: TextSpan(
+              //       text: 'Forgot your password? ',
+              //       style: const TextStyle(color: Colors.grey),
+              //       children: [
+              //         TextSpan(
+              //             style: TextStyle(
+              //               color: AppColor.primary,
+              //               fontWeight: FontWeight.w700,
+              //               fontFamily: 'inter',
+              //             ),
+              //             text: 'Reset')
+              //       ],
+              //     ),
+              //   ),
+              // ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}

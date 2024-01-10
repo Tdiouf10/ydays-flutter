@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:recette/screens/register.dart';
+import 'package:flutter/services.dart';
+import 'package:recette/screens/auth/welcome_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.black,
+    systemNavigationBarIconBrightness: Brightness.light,
+  ));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Register(),
+      theme: ThemeData(
+        fontFamily: 'Open Sans',
+        scaffoldBackgroundColor: Colors.white,
+      ),
+      home: WelcomePage(),
     );
   }
 }
