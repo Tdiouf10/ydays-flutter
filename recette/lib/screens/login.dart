@@ -1,57 +1,50 @@
-import 'package:flutter/material.dart';
-import 'package:recette/main.dart';
-import 'package:recette/providers/auth.dart';
-import 'package:recette/screens/register.dart';
-import 'package:recette/widgets/snack_bar.dart';
+import 'dart:convert';
 
-import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import 'package:recette/helpers/auth.dart';
+import 'package:recette/helpers/globals.dart';
+import 'package:recette/screens/home.dart';
+import 'package:recette/screens/register.dart';
+import 'package:http/http.dart' as http;
+import 'package:recette/widgets/custom_text_field.dart';
+
 import 'package:recette/widgets/top_screen_image.dart';
 
 import '../widgets/custom_button.dart';
-import '../widgets/custom_text_field.dart';
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  const Login({Key? key}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-  final TextEditingController _email = TextEditingController();
-  final TextEditingController _password = TextEditingController();
-
-  final _formKey = GlobalKey<FormState>();
+  String _email = '';
+  String _password = '';
 
   Future submit() async {
-    if (_formKey.currentState!.validate()) {
-      await Provider.of<Auth>(context, listen: false).login(
-          credential: {'email': _email.text, 'password': _password.text});
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(snackBar(context, 'Connexion réussie', false));
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: ((context) => HomePage())));
+    if (_email.isNotEmpty && _password.isNotEmpty) {
+      http.Response response = await Auth.login(_email, _password);
+      Map data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: ((context) => const Home())));
+      } else {
+        // J'ai le message invalide credentials mais je veux le message de l'api qui est dans data['message']
+        errorSnackBar(context, data['message']);
+      }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          snackBar(context, 'Veuiilez remplir tous les champs', true));
+      errorSnackBar(context, 'Veuillez remplir tous les champs');
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _email.text = '';
-    _password.text = '';
-  }
-
-  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.only(top: 20),
+          padding: const EdgeInsets.only(),
           child: Column(
             children: [
               const TopScreenImage(screenImageName: 'home.jpg'),
@@ -66,34 +59,36 @@ class _LoginState extends State<Login> {
               const SizedBox(
                 height: 20,
               ),
-              Form(
-                key: _formKey,
-                child: Scrollbar(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        CustomTextField(
-                          email: _email,
+              Scrollbar(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      CustomTextField(
+                          hint: 'Entrer votre email',
                           label: 'Email',
-                          hint: 'theo@gmail.com',
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        CustomTextField(
-                          email: _password,
+                          obscureText: true,
+                          onChanged: (value) {
+                            setState(() {
+                              _email = value;
+                            });
+                          }),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      CustomTextField(
                           hint: 'Entrer votre mot de passe',
                           label: 'Mot de passe',
-                        ),
-                        CustomButton(onTap: submit, title: 'Login')
-                      ],
-                    ),
+                          obscureText: true,
+                          onChanged: (value) {
+                            setState(() {
+                              _password = value;
+                            });
+                          }),
+                      CustomButton(onTap: submit, title: 'Se connecter')
+                    ],
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 20,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -104,7 +99,8 @@ class _LoginState extends State<Login> {
                   TextButton(
                     onPressed: () => Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: ((context) => const Register())),
+                      MaterialPageRoute(
+                          builder: ((context) => const Register())),
                     ),
                     child: const Text(
                       'Inscrivez-vous',

@@ -1,77 +1,44 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:recette/providers/auth.dart';
-import 'package:provider/provider.dart';
 
 class CustomTextField extends StatelessWidget {
   CustomTextField(
       {Key? key,
-      required TextEditingController email,
+        required this.label,
       required this.hint,
-      required this.label
-      })
-      : _email = email,
-        super(key: key);
+      required this.obscureText,
+      required this.onChanged})
+      : super(key: key);
 
-  final TextEditingController _email;
   String label;
   String hint;
+  bool obscureText;
+  Function(String) onChanged;
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    return TextField(
+      obscureText: obscureText,
+      onChanged: onChanged,
       decoration: InputDecoration(
-          suffixIcon: label == 'Password'
-              ? GestureDetector(
-                  onTap: () {
-                    Provider.of<Auth>(context, listen: false).toggleText();
-                  },
-                  child: Provider.of<Auth>(context).obscureText
-                      ? const Icon(
-                          FeatherIcons.eyeOff,
-                          color: Colors.indigo,
-                          // size: 35,
-                        )
-                      : const Icon(
-                          FeatherIcons.eye, color: Colors.indigo,
-                          // size: 35,
-                        ),
-                )
-              : const SizedBox.shrink(),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: Colors.indigo.shade500)),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Colors.indigo, width: 2)),
-          labelText: label,
-          hintText: hint),
-      controller: _email,
-      autofocus: true,
-      autocorrect: true,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          if (label == 'Email') {
-            return Provider.of<Auth>(context, listen: false)
-                .validationError
-                ?.email;
-          } else if (label == 'Password') {
-            return Provider.of<Auth>(context, listen: false)
-                .validationError
-                ?.password;
-          } else {
-            return Provider.of<Auth>(context, listen: false)
-                .validationError
-                ?.name;
-          }
-        } else {
-          return null;
-        }
-      },
-      obscureText:
-          label == 'Password' ? Provider.of<Auth>(context).obscureText : false,
+        labelText: label,
+        hintText: hint,
+        hintStyle: const TextStyle(
+          color: Colors.grey,
+        ),
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12),
+              bottomRight: Radius.circular(12)),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.indigo),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12),
+              bottomRight: Radius.circular(12)),
+        ),
+      ),
     );
   }
 }
