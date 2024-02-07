@@ -7,10 +7,12 @@ void main() {
     systemNavigationBarColor: Colors.black,
     systemNavigationBarIconBrightness: Brightness.light,
   ));
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Open Sans',
         scaffoldBackgroundColor: Colors.white,
       ),
-      home: WelcomePage(),
+      home: const WelcomePage(),
     );
   }
 }

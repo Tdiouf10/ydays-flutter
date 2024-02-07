@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:recette/utils/AppColor.dart';
 
+import '../utils/AppColor.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
-
+import 'bookmarks_page.dart';
+import 'explore_page.dart';
+import 'home_page.dart';
 
 class PageSwitcher extends StatefulWidget {
+  const PageSwitcher({super.key});
+
   @override
   _PageSwitcherState createState() => _PageSwitcherState();
 }
@@ -25,19 +29,22 @@ class _PageSwitcherState extends State<PageSwitcher> {
       body: Stack(
         children: [
           [
-            // HomePage(),
-            // ExplorePage(),
-            // BookmarksPage(),
+            HomePage(),
+            ExplorePage(),
+            const BookmarksPage(),
           ][_selectedIndex],
-          BottomGradientWidget(),
+          const BottomGradientWidget(),
         ],
       ),
-      bottomNavigationBar: CustomBottomNavigationBar(onItemTapped: _onItemTapped, selectedIndex: _selectedIndex),
+      bottomNavigationBar: CustomBottomNavigationBar(
+          onItemTapped: _onItemTapped, selectedIndex: _selectedIndex),
     );
   }
 }
 
 class BottomGradientWidget extends StatelessWidget {
+  const BottomGradientWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
