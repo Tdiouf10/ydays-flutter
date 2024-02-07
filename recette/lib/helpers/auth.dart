@@ -6,12 +6,12 @@ import 'package:http/http.dart' as http;
 
 
 class Auth {
-  static Future<http.Response> register(String name, String email, String password, String password_confirmation) async {
+  static Future<http.Response> register(String name, String email, String password, String passwordConfirmation) async {
     Map data = {
       'name': name,
       'email': email,
       'password': password,
-      'password_confirmation': password_confirmation,
+      'password_confirmation': passwordConfirmation,
     };
 
     var body = json.encode(data);
