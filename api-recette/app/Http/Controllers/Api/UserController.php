@@ -2,22 +2,26 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\JsonResponse;
 use App\Http\Resources\User\UserCollection;
+use App\Http\Resources\User\UserResource;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UserController extends ApiController
 {
-
-
+    /**
+     * UserController constructor.
+     */
     public function __construct()
     {
         $this->model = new User();
         parent::__construct();
     }
+
     /**
      * Display a listing of the resource.
+     *
      * @return UserCollection
      */
     public function index()
@@ -41,9 +45,10 @@ class UserController extends ApiController
         // Save the model
         $success = $user->save();
 
-        if (!$success) {
+        if (! $success) {
             return $this->internalServerError('User creation failed');
         }
+
         return $this->successResponse('User created successfully');
 
     }
@@ -51,9 +56,9 @@ class UserController extends ApiController
     /**
      * Display the specified resource.
      */
-    public function show(User $user): UserCollection|JsonResponse
+    public function show(User $user): UserResource|JsonResponse
     {
-        return new UserCollection($user);
+        return new UserResource($user);
     }
 
     /**
@@ -67,9 +72,10 @@ class UserController extends ApiController
         // Save the model
         $success = $userModel->save();
 
-        if (!$success) {
+        if (! $success) {
             return $this->internalServerError('User creation failed');
         }
+
         return $this->successResponse('User updated successfully');
     }
 
@@ -80,6 +86,7 @@ class UserController extends ApiController
     {
         // Delete the model from the database
         $user->delete();
+
         return $this->successResponse('User deleted successfully');
     }
 }

@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AuthController extends Controller
+class AuthController extends ApiController
 {
+    public function __construct()
+    {
+        $this->model = new User();
+        $this->fillableFields = $this->model->getFillable();
+        parent::__construct();
+    }
+
     public function register(Request $request)
     {
         try {
@@ -34,12 +40,12 @@ class AuthController extends Controller
             $request->validate([
                 'email' => 'email|required',
                 'password' => 'required',
-                'remember_me' => 'boolean'
+                'remember_me' => 'boolean',
             ]);
 
             $credentials = request(['email', 'password']);
 
-            if (!Auth::attempt($credentials)) {
+            if (! Auth::attempt($credentials)) {
                 return $this->unauthorizedException('Invalid credentials');
             }
 
@@ -64,6 +70,7 @@ class AuthController extends Controller
     {
         try {
             auth()->user()->token()->revoke();
+
             return response()->json(['message' => 'Successfully logged out'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

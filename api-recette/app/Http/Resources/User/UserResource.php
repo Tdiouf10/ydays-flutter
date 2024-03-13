@@ -18,6 +18,13 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => (string) $this->name,
             'email' => (string) $this->email,
+            'favories' => $this->favories->map(function ($product) {
+                return [
+                    'id' => $product->id,
+                    'title' => $product->name,
+                    'picture' => $product->image,
+                ];
+            }),
         ];
     }
 }

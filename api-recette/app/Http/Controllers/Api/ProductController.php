@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\Product\ProductCollection;
+use App\Http\Resources\Product\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,6 +22,21 @@ class ProductController extends ApiController
     public function index(): ProductCollection
     {
         return new ProductCollection(Product::query()->paginate(10));
+    }
+
+    public function popular()
+    {
+        $popularProduct = Product::query()->whereHas('favories')->get();
+
+        return new ProductCollection($popularProduct);
+    }
+
+    public function recommanded()
+    {
+        $preferencesId = auth()->user()->favories->pluck('id');
+        $recettesRecommandees = Product::query()->whereHas('favories', function ($query) use ($preferencesId) {
+            $query->whereIn('id', $preferencesId);
+        })->inRandomOrder()->limit(10)->get();
     }
 
     /**
@@ -42,18 +58,19 @@ class ProductController extends ApiController
         // Save the model
         $success = $productModel->save();
 
-        if (!$success) {
+        if (! $success) {
             return $this->internalServerError('User creation failed');
         }
+
         return $this->successResponse('User created successfully');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Product $product): ProductCollection
+    public function show(Product $product): ProductResource
     {
-        return new ProductCollection($product);
+        return new ProductResource($product);
     }
 
     /**
@@ -67,7 +84,7 @@ class ProductController extends ApiController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product): JsonResponse | ProductCollection
+    public function update(Request $request, Product $product): JsonResponse|ProductCollection
     {
         $fields = collect($request->all());
         // Set data to the model
@@ -75,9 +92,10 @@ class ProductController extends ApiController
         // Save the model
         $success = $productModel->save();
 
-        if (!$success) {
+        if (! $success) {
             return $this->internalServerError('Product creation failed');
         }
+
         return $this->successResponse('Product updated successfully');
     }
 
@@ -87,6 +105,7 @@ class ProductController extends ApiController
     public function destroy(Product $product): JsonResponse
     {
         $product->delete();
+
         return $this->successResponse('Product deleted successfully');
     }
 }

@@ -11,18 +11,20 @@ class Product extends Model
     use HasFactory, SoftDeletes;
 
     public const DIFFICULTY_VERY_EASY = 1;
-    public const DIFFICULTY_EASY = 2;
-    public const DIFFICULTY_MEDIUM = 3;
-    public const DIFFICULTY_HARD = 4;
-    public const DIFFICULTY_VERY_HARD = 5;
 
+    public const DIFFICULTY_EASY = 2;
+
+    public const DIFFICULTY_MEDIUM = 3;
+
+    public const DIFFICULTY_HARD = 4;
+
+    public const DIFFICULTY_VERY_HARD = 5;
 
     protected $fillable = [
         'name',
         'description',
         'category_id',
     ];
-
 
     protected $casts = [
         'dificulty' => 'integer',
@@ -34,5 +36,10 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function favories()
+    {
+        return $this->belongsToMany(Product::class, 'favories');
     }
 }
