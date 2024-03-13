@@ -21,16 +21,14 @@ class Product extends Model
     public const DIFFICULTY_VERY_HARD = 5;
 
     protected $fillable = [
-        'name',
+        'title',
         'description',
-        'category_id',
+        'category_id', 'photo', 'calories', 'time',
     ];
 
     protected $casts = [
-        'dificulty' => 'integer',
-        'number_of_people' => 'integer',
-        'cooking_time' => 'integer',
-        'preparation_time' => 'integer',
+        'calories' => 'integer',
+        'time' => 'integer',
     ];
 
     public function category()
@@ -42,4 +40,21 @@ class Product extends Model
     {
         return $this->belongsToMany(Product::class, 'favories');
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function ingredients()
+    {
+        return $this->hasMany(Ingredient::class);
+    }
+
+    public function steps()
+    {
+        $this->hasMany(Tutorial::class);
+    }
+
+
 }
