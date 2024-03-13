@@ -3,7 +3,6 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,16 +16,14 @@ use Illuminate\Support\Facades\Route;
 |.
 */
 
-
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
-Route::apiResource('users', UserController::class);
-Route::apiResource('products', ProductController::class);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('products')->group(function () {
+        Route::get('popular', [ProductController::class, 'popular']);
+        Route::get('recommand', [ProductController::class, 'recommanded']);
+    });
+    Route::apiResource('users', UserController::class);
+    Route::apiResource('products', ProductController::class);
 });
-
-// Path: routes/api.php
-// Register and login routes
-

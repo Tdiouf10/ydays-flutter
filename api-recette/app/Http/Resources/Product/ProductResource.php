@@ -53,6 +53,7 @@ class ProductResource extends JsonResource
     public function numberOfPeople(): string
     {
         $html = $this->number_of_people > 1 ? 'personnes' : 'personne';
+
         return "$this->number_of_people $html";
     }
 
@@ -67,6 +68,7 @@ class ProductResource extends JsonResource
         if ($minutes > 0) {
             $html .= "$minutes min";
         }
+
         return $html;
     }
 

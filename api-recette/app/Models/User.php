@@ -44,7 +44,6 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-
     public function favories()
     {
         return $this->belongsToMany(Product::class, 'favories');

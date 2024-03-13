@@ -14,19 +14,22 @@ class Category extends Model
         'description',
     ];
 
-    public function scopeCategory($query, string $category) {
+    public function scopeCategory($query, string $category)
+    {
         return $query->where('name', $category);
     }
 
-//    public function products() {
-//        return $this->hasMany(Product::class);
-//    }
+    //    public function products() {
+    //        return $this->hasMany(Product::class);
+    //    }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->name;
     }
 
-    public function getDescription(): string {
+    public function getDescription(): string
+    {
         return $this->description;
     }
 }
